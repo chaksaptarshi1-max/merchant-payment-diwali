@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Merchant Payment – The Hidden Diwali Surprise. A playful festive mobile payment simulation."
+    />
+    <title>Merchant Payment – The Hidden Diwali Surprise</title>
+    <style>
+      :root {
+        --bg-1: #07111f;
+        --bg-2: #11263d;
+        --card-bg: rgba(10, 18, 28, 0.82);
+        --card-border: rgba(255, 255, 255, 0.12);
+        --text: #edf5ff;
+        --muted: #a7bacd;
+        --primary: #63d0ff;
+        --primary-deep: #2f92ff;
+        --success: #34d399;
+        --warning: #fbbf24;
+        --shadow: rgba(0, 0, 0, 0.35);
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(180deg, #050b14 0%, #0a1523 100%);
+        color: var(--text);
+      }
+
+      body {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+      }
+
+      .page-shell {
+        position: relative;
+        width: min(100%, 470px);
+        min-height: 760px;
+        border-radius: 30px;
+        overflow: hidden;
+        background: linear-gradient(180deg, rgba(12, 20, 31, 0.96), rgba(7, 13, 22, 0.97));
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.38);
+      }
+
+      .page-shell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, rgba(99,208,255,0.08), transparent 35%, rgba(255,255,255,0.03) 60%, transparent 100%);
+        pointer-events: none;
+      }
+
+      .topbar {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 18px 12px;
+      }
+
+      .brand {
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: rgba(237,245,255,0.76);
+      }
+
+      .toggle-cluster {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .toggle {
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.04);
+        color: var(--text);
+        padding: 8px 10px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+
+      .toggle:hover,
+      .toggle:focus-visible {
+        transform: translateY(-1px);
+        border-color: rgba(99, 208, 255, 0.52);
+      }
+
+      main {
+        position: relative;
+        z-index: 2;
+        padding: 10px 18px 18px;
+      }
+
+      .payment-card {
+        position: relative;
+        border-radius: 26px;
+        padding: 18px 18px 16px;
+        background: linear-gradient(180deg, rgba(18, 28, 40, 0.97), rgba(9, 18, 27, 0.95));
+        border: 1px solid var(--card-border);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+      }
+
+      .demo-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: rgba(237,245,255,0.7);
+        font-size: 0.66rem;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+
+      .demo-badge::before {
+        content: "";
+        display: block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: linear-gradient(180deg, #34d399, #10b981);
+        box-shadow: 0 0 12px rgba(52,211,153,0.8);
+      }
+
+      .merchant-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .merchant-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, rgba(99,208,255,0.22), rgba(47,146,255,0.22));
+        border: 1px solid rgba(99,208,255,0.32);
+        color: var(--primary);
+        font-size: 1.3rem;
+        font-weight: 800;
+      }
+
+      .merchant-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .merchant-sub {
+        margin-top: 2px;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .amount-block {
+        margin-top: 18px;
+        padding: 16px 14px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(99,208,255,0.08), rgba(255,255,255,0.02));
+        border: 1px solid rgba(99,208,255,0.12);
+      }
+
+      .amount-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .amount-value {
+        display: block;
+        margin-top: 10px;
+        font-size: clamp(2rem, 9vw, 2.9rem);
+        font-weight: 800;
+        letter-spacing: -0.06em;
+      }
+
+      .summary-list {
+        margin-top: 18px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .summary-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .summary-row strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .method-row {
+        margin-top: 18px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .method {
+        flex: 1 1 90px;
+        min-height: 44px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.02);
+        color: var(--text);
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+
+      .method.active {
+        background: linear-gradient(180deg, rgba(99,208,255,0.16), rgba(47,146,255,0.12));
+        border-color: rgba(99,208,255,0.42);
+        box-shadow: inset 0 0 16px rgba(99,208,255,0.1);
+      }
+
+      .sim-note {
+        margin-top: 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.06);
+        color: rgba(237,245,255,0.82);
+        font-size: 0.76rem;
+        line-height: 1.5;
+      }
+
+      .sim-note .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: linear-gradient(180deg, #34d399, #10b981);
+        box-shadow: 0 0 12px rgba(52,211,153,0.8);
+        flex-shrink: 0;
+        margin-top: 4px;
+      }
+
+      .pay-button {
+        width: 100%;
+        margin-top: 18px;
+        border: none;
+        border-radius: 16px;
+        padding: 18px 20px;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #07131f;
+        background: linear-gradient(135deg, #8ae5ff 0%, #7ad1ff 24%, #96f0d4 100%);
+        box-shadow: 0 20px 30px rgba(99,208,255,0.26);
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .pay-button:hover,
+      .pay-button:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 22px 32px rgba(99,208,255,0.32);
+      }
+
+      .loading-panel,
+      .surprise-panel {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.45s ease;
+      }
+
+      .loading-panel {
+        display: grid;
+        place-items: center;
+        background: rgba(4, 10, 16, 0.5);
+        backdrop-filter: blur(6px);
+      }
+
+      .loading-panel.visible,
+      .surprise-panel.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .loader-shell {
+        display: grid;
+        gap: 20px;
+        place-items: center;
+        text-align: center;
+        padding: 18px;
+      }
+
+      .loader-ring {
+        position: relative;
+        width: 78px;
+        height: 78px;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, rgba(138,229,255,0.1), rgba(138,229,255,0.9), rgba(150,240,212,0.18), rgba(138,229,255,0.1));
+        animation: spin 1.2s linear infinite;
+      }
+
+      .loader-ring::before {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border-radius: 50%;
+        background: rgba(9, 18, 27, 0.96);
+      }
+
+      .loading-copy {
+        margin: 0;
+        font-size: clamp(1.25rem, 4vw, 1.6rem);
+        font-weight: 700;
+      }
+
+      .loading-subtext {
+        margin: 6px 0 0;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(237,245,255,0.8);
+      }
+
+      .surprise-panel {
+        overflow: hidden;
+        background: radial-gradient(circle at center, rgba(255,195,78,0.2), transparent 30%), linear-gradient(180deg, rgba(19, 18, 50, 0.9), rgba(8, 15, 27, 0.96));
+      }
+
+      .surprise-panel .content {
+        position: relative;
+        z-index: 5;
+        width: min(100%, 400px);
+        text-align: center;
+        padding: 30px 16px 26px;
+        margin: 0 auto;
+      }
+
+      .surprise-panel h1 {
+        margin: 0;
+        font-size: clamp(2.5rem, 8vw, 4.2rem);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #fff7d4;
+        text-shadow: 0 0 18px rgba(255, 193, 64, 0.8), 0 0 32px rgba(255, 152, 0, 0.6);
+      }
+
+      .surprise-panel p {
+        margin: 14px 0 0;
+        color: rgba(255, 242, 204, 0.92);
+        line-height: 1.6;
+        font-size: 0.9rem;
+      }
+
+      .replay-button {
+        margin-top: 22px;
+        padding: 12px 22px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.16);
+        background: rgba(255,255,255,0.08);
+        color: white;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+
+      .replay-button:hover,
+      .replay-button:focus-visible {
+        transform: translateY(-1px);
+        background: rgba(255,255,255,0.12);
+      }
+
+      .firework {
+        position: absolute;
+        left: var(--x);
+        top: var(--y);
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        animation: burst 2.6s ease-in-out infinite;
+        animation-delay: var(--delay);
+      }
+
+      .firework::before,
+      .firework::after {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 50%;
+        background: var(--color);
+        box-shadow: 0 0 12px var(--color), 0 0 26px var(--color);
+      }
+
+      .firework::before {
+        animation: spark 1.3s ease-out infinite alternate;
+      }
+
+      .firework::after {
+        animation: spark 1.15s ease-out infinite alternate-reverse;
+      }
+
+      .firework span {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--color);
+        box-shadow: 0 0 10px var(--color);
+        transform-origin: center;
+        animation: ray 1.5s ease-out infinite;
+      }
+
+      .firework span:nth-child(1) { transform: rotate(0deg) translateX(26px); }
+      .firework span:nth-child(2) { transform: rotate(45deg) translateX(26px); }
+      .firework span:nth-child(3) { transform: rotate(90deg) translateX(26px); }
+      .firework span:nth-child(4) { transform: rotate(135deg) translateX(26px); }
+      .firework span:nth-child(5) { transform: rotate(180deg) translateX(26px); }
+      .firework span:nth-child(6) { transform: rotate(225deg) translateX(26px); }
+      .firework span:nth-child(7) { transform: rotate(270deg) translateX(26px); }
+      .firework span:nth-child(8) { transform: rotate(315deg) translateX(26px); }
+
+      .diya {
+        position: absolute;
+        bottom: 38px;
+        width: 76px;
+        height: 64px;
+        border-radius: 10px 10px 18px 18px;
+        background: linear-gradient(180deg, #f6d48b 0%, #e6a14b 32%, #8d4f20 100%);
+        box-shadow: inset 0 10px 16px rgba(255,255,255,0.2), 0 0 22px rgba(255, 191, 71, 0.4);
+      }
+
+      .diya::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 8px;
+        transform: translateX(-50%);
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 50% 35%, #fff9d8, #f1be55 60%, #d17d18 100%);
+        box-shadow: 0 0 18px rgba(255, 210, 100, 0.8);
+      }
+
+      .diya::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: -12px;
+        transform: translateX(-50%);
+        width: 52px;
+        height: 26px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 50% 36%, rgba(255, 250, 197, 0.9), rgba(255,193,64,0.75) 35%, rgba(163,87,15,0.22) 70%, transparent 100%);
+        box-shadow: 0 0 28px rgba(255, 198, 84, 0.75);
+      }
+
+      .diya-1 { left: 58px; }
+      .diya-2 { left: 150px; }
+      .diya-3 { right: 58px; }
+
+      .sparkles {
+        position: absolute;
+        inset: 0;
+        background-image:
+          radial-gradient(circle, rgba(255,255,255,0.8) 0 1.2px, transparent 2px),
+          radial-gradient(circle, rgba(255, 183, 71, 0.9) 0 1.3px, transparent 2px),
+          radial-gradient(circle, rgba(122, 231, 255, 0.8) 0 1.2px, transparent 2px);
+        background-size: 120px 120px, 100px 100px, 90px 90px;
+        background-position: 8px 18px, 24px 74px, 42px 34px;
+        opacity: 0.9;
+        animation: shimmer 6s linear infinite alternate;
+      }
+
+      .sky-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 14%, rgba(255, 205, 77, 0.18), transparent 32%);
+      }
+
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @keyframes burst {
+        0% { transform: scale(0.4); opacity: 0; }
+        18% { transform: scale(1.1); opacity: 1; }
+        45% { transform: scale(1.5); opacity: 0.9; }
+        100% { transform: scale(1.9); opacity: 0; }
+      }
+      @keyframes spark {
+        0% { transform: scale(0.6); opacity: 0.45; }
+        100% { transform: scale(1.8); opacity: 1; }
+      }
+      @keyframes ray {
+        0% { opacity: 0.25; transform: scale(0.3); }
+        60% { opacity: 1; transform: scale(1.2); }
+        100% { opacity: 0; transform: scale(0.45); }
+      }
+      @keyframes shimmer {
+        0% { transform: scale(1) translateY(0); opacity: 0.65; }
+        100% { transform: scale(1.08) translateY(-6px); opacity: 1; }
+      }
+
+      @media (max-width: 420px) {
+        .page-shell {
+          min-height: 700px;
+        }
+
+        .topbar {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+
+        .toggle-cluster {
+          gap: 6px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand">Merchant Payment</div>
+        <div class="toggle-cluster">
+          <button id="soundToggle" class="toggle" type="button" aria-pressed="false">🔊 Sound: Off</button>
+          <button id="vibrationToggle" class="toggle" type="button" aria-pressed="false">📳 Vibration: Off</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="payment-card" aria-label="Payment card">
+          <div class="demo-badge">Playful Simulation</div>
+
+          <div class="merchant-row">
+            <div class="merchant-icon" aria-hidden="true">₹</div>
+            <div>
+              <div class="merchant-name">Diwali Bazaar</div>
+              <div class="merchant-sub">Merchant payment</div>
+            </div>
+          </div>
+
+          <div class="amount-block">
+            <span class="amount-label">Amount</span>
+            <span class="amount-value">₹ 2,499.00</span>
+          </div>
+
+          <div class="summary-list">
+            <div class="summary-row"><span>Order</span><strong>Festival Gift Box</strong></div>
+            <div class="summary-row"><span>Reference</span><strong>MB-2026-42</strong></div>
+            <div class="summary-row"><span>Mode</span><strong>UPI / Wallet / Card</strong></div>
+          </div>
+
+          <div class="method-row" aria-label="Payment methods">
+            <button class="method active" type="button">UPI</button>
+            <button class="method" type="button">Wallet</button>
+            <button class="method" type="button">Card</button>
+          </div>
+
+          <div class="sim-note">
+            <span class="dot" aria-hidden="true"></span>
+            <span>This is a playful demo only. No real payment gateway, UPI ID, OTP, PIN, or card details are requested.</span>
+          </div>
+
+          <button id="payButton" class="pay-button" type="button">Pay now</button>
+        </section>
+      </main>
+
+      <div id="loadingPanel" class="loading-panel" aria-live="polite">
+        <div class="loader-shell">
+          <div class="loader-ring" aria-hidden="true"></div>
+          <div>
+            <p id="loadingText" class="loading-copy">Processing payment…</p>
+            <p class="loading-subtext">Please wait</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="surprisePanel" class="surprise-panel" aria-live="polite">
+        <div class="sky-glow"></div>
+        <div class="sparkles" aria-hidden="true"></div>
+
+        <div class="firework" style="--x: 14%; --y: 20%; --color: #ffcc4d; --delay: 0.2s;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="firework" style="--x: 33%; --y: 27%; --color: #7ae7ff; --delay: 0.8s;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="firework" style="--x: 60%; --y: 22%; --color: #ff9b6d; --delay: 1.2s;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="firework" style="--x: 79%; --y: 17%; --color: #b9ff89; --delay: 1.6s;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="firework" style="--x: 52%; --y: 38%; --color: #ffd166; --delay: 1.9s;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+        <div class="diya diya-1" aria-hidden="true"></div>
+        <div class="diya diya-2" aria-hidden="true"></div>
+        <div class="diya diya-3" aria-hidden="true"></div>
+
+        <div class="content">
+          <h1>Happy Diwali!</h1>
+          <p>May your life shine as bright as the festival of lights. Wishing you happiness, prosperity, success and endless reasons to smile!</p>
+          <button id="replayButton" class="replay-button" type="button">Replay surprise</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const payButton = document.getElementById('payButton');
+      const loadingPanel = document.getElementById('loadingPanel');
+      const surprisePanel = document.getElementById('surprisePanel');
+      const replayButton = document.getElementById('replayButton');
+      const soundToggle = document.getElementById('soundToggle');
+      const vibrationToggle = document.getElementById('vibrationToggle');
+      const loadingText = document.getElementById('loadingText');
+
+      let soundEnabled = false;
+      let vibrationEnabled = false;
+      let audioContext = null;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function ensureAudio() {
+        if (!audioContext && window.AudioContext) {
+          audioContext = new AudioContext();
+        }
+      }
+
+      function playFestiveTone() {
+        if (!soundEnabled) return;
+        ensureAudio();
+        if (!audioContext) return;
+
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.type = 'triangle';
+        oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.18);
+        gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.065, audioContext.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.35);
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.38);
+      }
+
+      function vibrate() {
+        if (!vibrationEnabled || !navigator.vibrate) return;
+        navigator.vibrate([60, 70, 120]);
+      }
+
+      function updateToggleLabel(button, enabled, labelOff, labelOn) {
+        button.setAttribute('aria-pressed', String(enabled));
+        button.textContent = enabled ? labelOn : labelOff;
+      }
+
+      function runPaymentFlow() {
+        loadingPanel.classList.add('visible');
+        surprisePanel.classList.remove('visible');
+        loadingText.textContent = 'Processing payment…';
+        payButton.disabled = true;
+        payButton.style.opacity = '0.7';
+
+        setTimeout(() => {
+          loadingText.textContent = 'Verifying details…';
+        }, reducedMotion ? 350 : 1200);
+
+        setTimeout(() => {
+          loadingPanel.classList.remove('visible');
+          surprisePanel.classList.add('visible');
+          playFestiveTone();
+          vibrate();
+          payButton.disabled = false;
+          payButton.style.opacity = '1';
+        }, reducedMotion ? 600 : 3000);
+      }
+
+      payButton.addEventListener('click', runPaymentFlow);
+      replayButton.addEventListener('click', runPaymentFlow);
+
+      soundToggle.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        if (soundEnabled) {
+          ensureAudio();
+          if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+        }
+        updateToggleLabel(soundToggle, soundEnabled, '🔊 Sound: Off', '🔉 Sound: On');
+        if (soundEnabled) playFestiveTone();
+      });
+
+      vibrationToggle.addEventListener('click', () => {
+        vibrationEnabled = !vibrationEnabled;
+        updateToggleLabel(vibrationToggle, vibrationEnabled, '📳 Vibration: Off', '📳 Vibration: On');
+        if (vibrationEnabled) vibrate();
+      });
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
