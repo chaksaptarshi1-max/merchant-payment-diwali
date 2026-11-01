@@ -1,758 +1,1464 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Merchant Payment – The Hidden Diwali Surprise. A playful festive mobile payment simulation."
-    />
-    <title>Merchant Payment – The Hidden Diwali Surprise</title>
-    <style>
-      :root {
-        --bg-1: #07111f;
-        --bg-2: #11263d;
-        --card-bg: rgba(10, 18, 28, 0.82);
-        --card-border: rgba(255, 255, 255, 0.12);
-        --text: #edf5ff;
-        --muted: #a7bacd;
-        --primary: #63d0ff;
-        --primary-deep: #2f92ff;
-        --success: #34d399;
-        --warning: #fbbf24;
-        --shadow: rgba(0, 0, 0, 0.35);
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f9fc">
+  <meta name="description"
+        content="A little moment of light and happiness.">
+  <title>Processing</title>
+
+  <style>
+    :root {
+      --navy: #101a3b;
+      --deep-navy: #080f28;
+      --gold: #ffd477;
+      --amber: #ffad43;
+      --blue: #235bd2;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", sans-serif;
+      background: #f7f9fc;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    /* =========================================
+       INITIAL PROCESSING SCREEN
+    ========================================= */
+
+    .processing-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding:
+        max(24px, env(safe-area-inset-top))
+        24px
+        max(24px, env(safe-area-inset-bottom));
+      background:
+        radial-gradient(
+          circle at 50% 42%,
+          #ffffff 0%,
+          #f8faff 65%,
+          #f1f5fc 100%
+        );
+      color: #142649;
+      text-align: center;
+      z-index: 5;
+    }
+
+    .processing-content {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .spinner {
+      width: 78px;
+      height: 78px;
+      border: 6px solid #e7edf9;
+      border-top-color: #245bd5;
+      border-right-color: #6b91ed;
+      border-radius: 50%;
+      animation: spin 0.95s linear infinite;
+      box-shadow: 0 8px 28px rgba(35, 91, 210, 0.10);
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
       }
+    }
 
-      * { box-sizing: border-box; }
+    .processing-title {
+      margin: 30px 0 10px;
+      color: #14264a;
+      font-size: clamp(2rem, 7vw, 2.55rem);
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 1.1;
+    }
 
-      html, body {
-        margin: 0;
-        min-height: 100%;
-        font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        background: linear-gradient(180deg, #050b14 0%, #0a1523 100%);
-        color: var(--text);
-      }
+    .processing-message {
+      min-height: 52px;
+      margin: 0;
+      color: #64738d;
+      font-size: clamp(0.98rem, 3.8vw, 1.12rem);
+      font-weight: 400;
+      line-height: 1.6;
+    }
 
-      body {
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        padding: 20px;
-      }
+    .demo-note {
+      position: absolute;
+      right: 18px;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      left: 18px;
+      color: #929caf;
+      font-size: 0.76rem;
+      line-height: 1.5;
+      text-align: center;
+    }
 
-      .page-shell {
-        position: relative;
-        width: min(100%, 470px);
-        min-height: 760px;
-        border-radius: 30px;
-        overflow: hidden;
-        background: linear-gradient(180deg, rgba(12, 20, 31, 0.96), rgba(7, 13, 22, 0.97));
-        border: 1px solid rgba(255,255,255,0.08);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.38);
-      }
+    /* =========================================
+       DIWALI CELEBRATION SCREEN
+    ========================================= */
 
-      .page-shell::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(120deg, rgba(99,208,255,0.08), transparent 35%, rgba(255,255,255,0.03) 60%, transparent 100%);
-        pointer-events: none;
-      }
+    .celebration-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      color: #fff;
+      background:
+        radial-gradient(
+          ellipse at 50% 37%,
+          rgba(67, 57, 125, 0.72) 0%,
+          rgba(24, 28, 67, 0.42) 44%,
+          transparent 75%
+        ),
+        radial-gradient(
+          ellipse at 12% 85%,
+          rgba(128, 66, 43, 0.20),
+          transparent 45%
+        ),
+        linear-gradient(
+          155deg,
+          #111638 0%,
+          #0b1230 48%,
+          #080e27 100%
+        );
+    }
 
-      .topbar {
-        position: relative;
-        z-index: 3;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 18px 18px 12px;
-      }
+    .celebration-screen::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.7;
+      background:
+        radial-gradient(
+          circle at 50% 48%,
+          rgba(255, 199, 102, 0.08),
+          transparent 43%
+        );
+    }
 
-      .brand {
-        font-size: 0.8rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        font-weight: 700;
-        color: rgba(237,245,255,0.76);
-      }
+    .fireworks-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
 
-      .toggle-cluster {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-      }
+    .celebration-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      min-height: 100%;
+      padding:
+        calc(23px + env(safe-area-inset-top))
+        18px
+        calc(18px + env(safe-area-inset-bottom));
+    }
 
-      .toggle {
-        border: 1px solid rgba(255,255,255,0.08);
-        background: rgba(255,255,255,0.04);
-        color: var(--text);
-        padding: 8px 10px;
-        border-radius: 999px;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        cursor: pointer;
-        transition: transform 0.2s ease, border-color 0.2s ease;
-      }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 8px 15px;
+      border: 1px solid rgba(255, 215, 143, 0.34);
+      border-radius: 999px;
+      background: rgba(255, 216, 149, 0.07);
+      color: #ffe2aa;
+      font-size: 0.69rem;
+      font-weight: 700;
+      letter-spacing: 0.19em;
+      text-align: center;
+      text-transform: uppercase;
+      box-shadow: 0 0 22px rgba(255, 190, 90, 0.07);
+      animation: fadeDown 1s ease both;
+    }
 
-      .toggle:hover,
-      .toggle:focus-visible {
-        transform: translateY(-1px);
-        border-color: rgba(99, 208, 255, 0.52);
-      }
+    .eyebrow-star {
+      color: #ffce76;
+      font-size: 0.86rem;
+    }
 
-      main {
-        position: relative;
-        z-index: 2;
-        padding: 10px 18px 18px;
-      }
+    .hero-content {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: clamp(23px, 5vh, 43px) 0 14px;
+      text-align: center;
+    }
 
-      .payment-card {
-        position: relative;
-        border-radius: 26px;
-        padding: 18px 18px 16px;
-        background: linear-gradient(180deg, rgba(18, 28, 40, 0.97), rgba(9, 18, 27, 0.95));
-        border: 1px solid var(--card-border);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-      }
+    .greeting-title {
+      margin: 0 0 clamp(16px, 3vh, 24px);
+      color: #ffdc91;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 9vw, 5.5rem);
+      font-weight: 700;
+      letter-spacing: 0.025em;
+      line-height: 1.08;
+      white-space: nowrap;
+      text-shadow:
+        0 0 8px rgba(255, 219, 151, 0.35),
+        0 0 26px rgba(255, 178, 66, 0.23),
+        0 5px 24px rgba(0, 0, 0, 0.28);
+      animation: greetingAppear 1.15s cubic-bezier(.2,.8,.2,1) both;
+    }
 
-      .demo-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 11px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        color: rgba(237,245,255,0.7);
-        font-size: 0.66rem;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
-      }
+    .greeting-message {
+      width: min(100%, 580px);
+      margin: 0;
+      color: #f3edff;
+      font-size: clamp(1rem, 3.9vw, 1.23rem);
+      font-weight: 400;
+      line-height: 1.72;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+      animation: fadeUp 1.1s 0.28s ease both;
+    }
 
-      .demo-badge::before {
-        content: "";
-        display: block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: linear-gradient(180deg, #34d399, #10b981);
-        box-shadow: 0 0 12px rgba(52,211,153,0.8);
-      }
+    /* =========================================
+       DIYA ILLUSTRATIONS
+    ========================================= */
 
-      .merchant-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-top: 18px;
-      }
+    .diya-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: clamp(5px, 2.4vw, 23px);
+      width: 100%;
+      margin-top: clamp(23px, 4.4vh, 39px);
+      animation: fadeUp 1.1s 0.48s ease both;
+    }
 
-      .merchant-icon {
-        width: 54px;
-        height: 54px;
-        border-radius: 18px;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(135deg, rgba(99,208,255,0.22), rgba(47,146,255,0.22));
-        border: 1px solid rgba(99,208,255,0.32);
-        color: var(--primary);
-        font-size: 1.3rem;
-        font-weight: 800;
-      }
+    .diya {
+      display: block;
+      width: clamp(70px, 22vw, 116px);
+      height: auto;
+      overflow: visible;
+      filter:
+        drop-shadow(0 0 10px rgba(255, 172, 66, 0.28))
+        drop-shadow(0 0 23px rgba(255, 159, 56, 0.15));
+      animation: diyaFloat 3.8s ease-in-out infinite;
+    }
 
-      .merchant-name {
-        font-size: 1.1rem;
-        font-weight: 700;
-      }
+    .diya:nth-child(2) {
+      animation-delay: 0.45s;
+    }
 
-      .merchant-sub {
-        margin-top: 2px;
-        font-size: 0.72rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
+    .diya:nth-child(3) {
+      animation-delay: 0.9s;
+    }
 
-      .amount-block {
-        margin-top: 18px;
-        padding: 16px 14px;
-        border-radius: 18px;
-        background: linear-gradient(180deg, rgba(99,208,255,0.08), rgba(255,255,255,0.02));
-        border: 1px solid rgba(99,208,255,0.12);
-      }
+    .diya-flame {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: flame 1.15s ease-in-out infinite alternate;
+    }
 
-      .amount-label {
-        font-size: 0.7rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
+    .diya:nth-child(2) .diya-flame {
+      animation-delay: 0.35s;
+    }
 
-      .amount-value {
-        display: block;
-        margin-top: 10px;
-        font-size: clamp(2rem, 9vw, 2.9rem);
-        font-weight: 800;
-        letter-spacing: -0.06em;
-      }
+    .diya:nth-child(3) .diya-flame {
+      animation-delay: 0.7s;
+    }
 
-      .summary-list {
-        margin-top: 18px;
-        display: grid;
-        gap: 10px;
-      }
+    .closing-message {
+      max-width: 520px;
+      margin: 17px 0 0;
+      color: #ffdfa8;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(0.96rem, 3.8vw, 1.12rem);
+      font-style: italic;
+      line-height: 1.6;
+      text-align: center;
+      animation: fadeUp 1.1s 0.68s ease both;
+    }
 
-      .summary-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 10px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
+    /* =========================================
+       INTERACTION BUTTONS
+    ========================================= */
 
-      .summary-row strong {
-        color: var(--text);
-        font-weight: 600;
-      }
+    .celebration-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: clamp(21px, 4vh, 32px);
+      animation: fadeUp 1s 0.85s ease both;
+    }
 
-      .method-row {
-        margin-top: 18px;
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
+    .control-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 11px 17px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 650;
+      line-height: 1.25;
+      white-space: nowrap;
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
 
-      .method {
-        flex: 1 1 90px;
-        min-height: 44px;
-        border-radius: 12px;
-        border: 1px solid rgba(255,255,255,0.06);
-        background: rgba(255,255,255,0.02);
-        color: var(--text);
-        font-weight: 700;
-        letter-spacing: 0.03em;
-      }
+    .control-button:active {
+      transform: scale(0.96);
+    }
 
-      .method.active {
-        background: linear-gradient(180deg, rgba(99,208,255,0.16), rgba(47,146,255,0.12));
-        border-color: rgba(99,208,255,0.42);
-        box-shadow: inset 0 0 16px rgba(99,208,255,0.1);
-      }
+    .control-button:focus-visible {
+      outline: 3px solid #fff0c4;
+      outline-offset: 4px;
+    }
 
-      .sim-note {
-        margin-top: 16px;
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: 12px;
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.06);
-        color: rgba(237,245,255,0.82);
-        font-size: 0.76rem;
-        line-height: 1.5;
-      }
+    .replay-button {
+      border-color: rgba(255, 225, 166, 0.9);
+      background: linear-gradient(135deg, #ffe3a2, #f3b84c);
+      color: #211a2c;
+      box-shadow: 0 5px 22px rgba(255, 183, 68, 0.23);
+    }
 
-      .sim-note .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: linear-gradient(180deg, #34d399, #10b981);
-        box-shadow: 0 0 12px rgba(52,211,153,0.8);
-        flex-shrink: 0;
-        margin-top: 4px;
-      }
+    .replay-button:hover {
+      background: linear-gradient(135deg, #fff0c4, #ffca68);
+      box-shadow: 0 6px 27px rgba(255, 183, 68, 0.34);
+    }
 
-      .pay-button {
-        width: 100%;
-        margin-top: 18px;
-        border: none;
-        border-radius: 16px;
-        padding: 18px 20px;
-        font-size: 1rem;
-        font-weight: 800;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: #07131f;
-        background: linear-gradient(135deg, #8ae5ff 0%, #7ad1ff 24%, #96f0d4 100%);
-        box-shadow: 0 20px 30px rgba(99,208,255,0.26);
-        cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
+    .secondary-button {
+      border-color: rgba(255, 223, 177, 0.30);
+      background: rgba(255, 255, 255, 0.075);
+      color: #fff2d9;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
 
-      .pay-button:hover,
-      .pay-button:focus-visible {
-        transform: translateY(-1px);
-        box-shadow: 0 22px 32px rgba(99,208,255,0.32);
-      }
+    .secondary-button:hover:not(:disabled) {
+      border-color: rgba(255, 223, 177, 0.64);
+      background: rgba(255, 255, 255, 0.13);
+    }
 
-      .loading-panel,
-      .surprise-panel {
-        position: absolute;
-        inset: 0;
+    .control-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    /* =========================================
+       ANIMATIONS
+    ========================================= */
+
+    @keyframes greetingAppear {
+      from {
         opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.45s ease;
+        transform: translateY(16px) scale(0.97);
       }
-
-      .loading-panel {
-        display: grid;
-        place-items: center;
-        background: rgba(4, 10, 16, 0.5);
-        backdrop-filter: blur(6px);
-      }
-
-      .loading-panel.visible,
-      .surprise-panel.visible {
+      to {
         opacity: 1;
-        pointer-events: auto;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-9px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes diyaFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+
+    @keyframes flame {
+      from {
+        transform: scale(0.94, 1);
+        opacity: 0.87;
+      }
+      to {
+        transform: scale(1.06, 1.08);
+        opacity: 1;
+      }
+    }
+
+    /* =========================================
+       SMALL SCREEN ADJUSTMENTS
+    ========================================= */
+
+    @media (max-width: 360px) {
+      .celebration-inner {
+        padding-right: 13px;
+        padding-left: 13px;
       }
 
-      .loader-shell {
-        display: grid;
-        gap: 20px;
-        place-items: center;
-        text-align: center;
-        padding: 18px;
+      .control-button {
+        padding-right: 13px;
+        padding-left: 13px;
+        font-size: 0.81rem;
       }
 
-      .loader-ring {
-        position: relative;
-        width: 78px;
-        height: 78px;
-        border-radius: 50%;
-        background: conic-gradient(from 0deg, rgba(138,229,255,0.1), rgba(138,229,255,0.9), rgba(150,240,212,0.18), rgba(138,229,255,0.1));
-        animation: spin 1.2s linear infinite;
+      .greeting-title {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-height: 620px) {
+      .celebration-inner {
+        padding-top: calc(15px + env(safe-area-inset-top));
+        padding-bottom: calc(13px + env(safe-area-inset-bottom));
       }
 
-      .loader-ring::before {
-        content: "";
-        position: absolute;
-        inset: 12px;
-        border-radius: 50%;
-        background: rgba(9, 18, 27, 0.96);
+      .hero-content {
+        padding-top: 17px;
       }
 
-      .loading-copy {
-        margin: 0;
-        font-size: clamp(1.25rem, 4vw, 1.6rem);
-        font-weight: 700;
+      .greeting-title {
+        margin-bottom: 13px;
       }
 
-      .loading-subtext {
-        margin: 6px 0 0;
-        font-size: 0.7rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: rgba(237,245,255,0.8);
+      .greeting-message {
+        line-height: 1.52;
       }
 
-      .surprise-panel {
-        overflow: hidden;
-        background: radial-gradient(circle at center, rgba(255,195,78,0.2), transparent 30%), linear-gradient(180deg, rgba(19, 18, 50, 0.9), rgba(8, 15, 27, 0.96));
+      .diya-row {
+        margin-top: 17px;
       }
 
-      .surprise-panel .content {
-        position: relative;
-        z-index: 5;
-        width: min(100%, 400px);
-        text-align: center;
-        padding: 30px 16px 26px;
-        margin: 0 auto;
+      .closing-message {
+        margin-top: 11px;
       }
 
-      .surprise-panel h1 {
-        margin: 0;
-        font-size: clamp(2.5rem, 8vw, 4.2rem);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #fff7d4;
-        text-shadow: 0 0 18px rgba(255, 193, 64, 0.8), 0 0 32px rgba(255, 152, 0, 0.6);
+      .celebration-controls {
+        margin-top: 17px;
       }
+    }
 
-      .surprise-panel p {
-        margin: 14px 0 0;
-        color: rgba(255, 242, 204, 0.92);
-        line-height: 1.6;
-        font-size: 0.9rem;
+    /* Respect accessibility preferences. */
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
+    }
+  </style>
+</head>
 
-      .replay-button {
-        margin-top: 22px;
-        padding: 12px 22px;
-        border-radius: 999px;
-        border: 1px solid rgba(255,255,255,0.16);
-        background: rgba(255,255,255,0.08);
-        color: white;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: transform 0.2s ease, background 0.2s ease;
-      }
+<body>
 
-      .replay-button:hover,
-      .replay-button:focus-visible {
-        transform: translateY(-1px);
-        background: rgba(255,255,255,0.12);
-      }
+  <!-- =======================================
+       INITIAL PROCESSING SCREEN
+       This disappears completely at reveal.
+  ======================================== -->
 
-      .firework {
-        position: absolute;
-        left: var(--x);
-        top: var(--y);
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        animation: burst 2.6s ease-in-out infinite;
-        animation-delay: var(--delay);
-      }
+  <main id="processingScreen" class="processing-screen">
+    <div class="processing-content">
 
-      .firework::before,
-      .firework::after {
-        content: "";
-        position: absolute;
-        inset: -2px;
-        border-radius: 50%;
-        background: var(--color);
-        box-shadow: 0 0 12px var(--color), 0 0 26px var(--color);
-      }
+      <div class="spinner" aria-hidden="true"></div>
 
-      .firework::before {
-        animation: spark 1.3s ease-out infinite alternate;
-      }
+      <h1 class="processing-title">Processing...</h1>
 
-      .firework::after {
-        animation: spark 1.15s ease-out infinite alternate-reverse;
-      }
+      <p
+        id="processingMessage"
+        class="processing-message"
+        aria-live="polite"
+      >
+        Please wait while we process your request.
+      </p>
 
-      .firework span {
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background: var(--color);
-        box-shadow: 0 0 10px var(--color);
-        transform-origin: center;
-        animation: ray 1.5s ease-out infinite;
-      }
-
-      .firework span:nth-child(1) { transform: rotate(0deg) translateX(26px); }
-      .firework span:nth-child(2) { transform: rotate(45deg) translateX(26px); }
-      .firework span:nth-child(3) { transform: rotate(90deg) translateX(26px); }
-      .firework span:nth-child(4) { transform: rotate(135deg) translateX(26px); }
-      .firework span:nth-child(5) { transform: rotate(180deg) translateX(26px); }
-      .firework span:nth-child(6) { transform: rotate(225deg) translateX(26px); }
-      .firework span:nth-child(7) { transform: rotate(270deg) translateX(26px); }
-      .firework span:nth-child(8) { transform: rotate(315deg) translateX(26px); }
-
-      .diya {
-        position: absolute;
-        bottom: 38px;
-        width: 76px;
-        height: 64px;
-        border-radius: 10px 10px 18px 18px;
-        background: linear-gradient(180deg, #f6d48b 0%, #e6a14b 32%, #8d4f20 100%);
-        box-shadow: inset 0 10px 16px rgba(255,255,255,0.2), 0 0 22px rgba(255, 191, 71, 0.4);
-      }
-
-      .diya::before {
-        content: "";
-        position: absolute;
-        left: 50%;
-        bottom: 8px;
-        transform: translateX(-50%);
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        background: radial-gradient(circle at 50% 35%, #fff9d8, #f1be55 60%, #d17d18 100%);
-        box-shadow: 0 0 18px rgba(255, 210, 100, 0.8);
-      }
-
-      .diya::after {
-        content: "";
-        position: absolute;
-        left: 50%;
-        top: -12px;
-        transform: translateX(-50%);
-        width: 52px;
-        height: 26px;
-        border-radius: 50%;
-        background: radial-gradient(circle at 50% 36%, rgba(255, 250, 197, 0.9), rgba(255,193,64,0.75) 35%, rgba(163,87,15,0.22) 70%, transparent 100%);
-        box-shadow: 0 0 28px rgba(255, 198, 84, 0.75);
-      }
-
-      .diya-1 { left: 58px; }
-      .diya-2 { left: 150px; }
-      .diya-3 { right: 58px; }
-
-      .sparkles {
-        position: absolute;
-        inset: 0;
-        background-image:
-          radial-gradient(circle, rgba(255,255,255,0.8) 0 1.2px, transparent 2px),
-          radial-gradient(circle, rgba(255, 183, 71, 0.9) 0 1.3px, transparent 2px),
-          radial-gradient(circle, rgba(122, 231, 255, 0.8) 0 1.2px, transparent 2px);
-        background-size: 120px 120px, 100px 100px, 90px 90px;
-        background-position: 8px 18px, 24px 74px, 42px 34px;
-        opacity: 0.9;
-        animation: shimmer 6s linear infinite alternate;
-      }
-
-      .sky-glow {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at 50% 14%, rgba(255, 205, 77, 0.18), transparent 32%);
-      }
-
-      @keyframes spin { to { transform: rotate(360deg); } }
-      @keyframes burst {
-        0% { transform: scale(0.4); opacity: 0; }
-        18% { transform: scale(1.1); opacity: 1; }
-        45% { transform: scale(1.5); opacity: 0.9; }
-        100% { transform: scale(1.9); opacity: 0; }
-      }
-      @keyframes spark {
-        0% { transform: scale(0.6); opacity: 0.45; }
-        100% { transform: scale(1.8); opacity: 1; }
-      }
-      @keyframes ray {
-        0% { opacity: 0.25; transform: scale(0.3); }
-        60% { opacity: 1; transform: scale(1.2); }
-        100% { opacity: 0; transform: scale(0.45); }
-      }
-      @keyframes shimmer {
-        0% { transform: scale(1) translateY(0); opacity: 0.65; }
-        100% { transform: scale(1.08) translateY(-6px); opacity: 1; }
-      }
-
-      @media (max-width: 420px) {
-        .page-shell {
-          min-height: 700px;
-        }
-
-        .topbar {
-          padding-left: 14px;
-          padding-right: 14px;
-        }
-
-        .toggle-cluster {
-          gap: 6px;
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after {
-          animation-duration: 0.001ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.001ms !important;
-          scroll-behavior: auto !important;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="page-shell">
-      <header class="topbar">
-        <div class="brand">Merchant Payment</div>
-        <div class="toggle-cluster">
-          <button id="soundToggle" class="toggle" type="button" aria-pressed="false">🔊 Sound: Off</button>
-          <button id="vibrationToggle" class="toggle" type="button" aria-pressed="false">📳 Vibration: Off</button>
-        </div>
-      </header>
-
-      <main>
-        <section class="payment-card" aria-label="Payment card">
-          <div class="demo-badge">Playful Simulation</div>
-
-          <div class="merchant-row">
-            <div class="merchant-icon" aria-hidden="true">₹</div>
-            <div>
-              <div class="merchant-name">Diwali Bazaar</div>
-              <div class="merchant-sub">Merchant payment</div>
-            </div>
-          </div>
-
-          <div class="amount-block">
-            <span class="amount-label">Amount</span>
-            <span class="amount-value">₹ 2,499.00</span>
-          </div>
-
-          <div class="summary-list">
-            <div class="summary-row"><span>Order</span><strong>Festival Gift Box</strong></div>
-            <div class="summary-row"><span>Reference</span><strong>MB-2026-42</strong></div>
-            <div class="summary-row"><span>Mode</span><strong>UPI / Wallet / Card</strong></div>
-          </div>
-
-          <div class="method-row" aria-label="Payment methods">
-            <button class="method active" type="button">UPI</button>
-            <button class="method" type="button">Wallet</button>
-            <button class="method" type="button">Card</button>
-          </div>
-
-          <div class="sim-note">
-            <span class="dot" aria-hidden="true"></span>
-            <span>This is a playful demo only. No real payment gateway, UPI ID, OTP, PIN, or card details are requested.</span>
-          </div>
-
-          <button id="payButton" class="pay-button" type="button">Pay now</button>
-        </section>
-      </main>
-
-      <div id="loadingPanel" class="loading-panel" aria-live="polite">
-        <div class="loader-shell">
-          <div class="loader-ring" aria-hidden="true"></div>
-          <div>
-            <p id="loadingText" class="loading-copy">Processing payment…</p>
-            <p class="loading-subtext">Please wait</p>
-          </div>
-        </div>
-      </div>
-
-      <div id="surprisePanel" class="surprise-panel" aria-live="polite">
-        <div class="sky-glow"></div>
-        <div class="sparkles" aria-hidden="true"></div>
-
-        <div class="firework" style="--x: 14%; --y: 20%; --color: #ffcc4d; --delay: 0.2s;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-        <div class="firework" style="--x: 33%; --y: 27%; --color: #7ae7ff; --delay: 0.8s;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-        <div class="firework" style="--x: 60%; --y: 22%; --color: #ff9b6d; --delay: 1.2s;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-        <div class="firework" style="--x: 79%; --y: 17%; --color: #b9ff89; --delay: 1.6s;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-        <div class="firework" style="--x: 52%; --y: 38%; --color: #ffd166; --delay: 1.9s;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-
-        <div class="diya diya-1" aria-hidden="true"></div>
-        <div class="diya diya-2" aria-hidden="true"></div>
-        <div class="diya diya-3" aria-hidden="true"></div>
-
-        <div class="content">
-          <h1>Happy Diwali!</h1>
-          <p>May your life shine as bright as the festival of lights. Wishing you happiness, prosperity, success and endless reasons to smile!</p>
-          <button id="replayButton" class="replay-button" type="button">Replay surprise</button>
-        </div>
-      </div>
     </div>
 
-    <script>
-      const payButton = document.getElementById('payButton');
-      const loadingPanel = document.getElementById('loadingPanel');
-      const surprisePanel = document.getElementById('surprisePanel');
-      const replayButton = document.getElementById('replayButton');
-      const soundToggle = document.getElementById('soundToggle');
-      const vibrationToggle = document.getElementById('vibrationToggle');
-      const loadingText = document.getElementById('loadingText');
+    <p class="demo-note">
+      Playful demo only — no payment is collected.
+    </p>
+  </main>
 
-      let soundEnabled = false;
-      let vibrationEnabled = false;
-      let audioContext = null;
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function ensureAudio() {
-        if (!audioContext && window.AudioContext) {
-          audioContext = new AudioContext();
+  <!-- =======================================
+       FULL-SCREEN DIWALI REVEAL
+       Hidden until the processing sequence ends.
+  ======================================== -->
+
+  <main
+    id="celebrationScreen"
+    class="celebration-screen"
+    hidden
+    tabindex="-1"
+    aria-label="Diwali celebration"
+  >
+
+    <canvas
+      id="fireworksCanvas"
+      class="fireworks-canvas"
+      aria-hidden="true"
+    ></canvas>
+
+    <div class="celebration-inner">
+
+      <div class="eyebrow">
+        <span class="eyebrow-star">✦</span>
+        A festival of light
+        <span class="eyebrow-star">✦</span>
+      </div>
+
+      <section class="hero-content">
+
+        <h1 class="greeting-title">
+          HAPPY DIWALI!
+        </h1>
+
+        <p class="greeting-message">
+          May your life shine as bright as the festival of lights.
+          Wishing you happiness, prosperity, success and endless
+          reasons to smile!
+        </p>
+
+        <!-- Three original SVG diya illustrations -->
+
+        <div
+          class="diya-row"
+          role="img"
+          aria-label="Three glowing golden diyas"
+        >
+
+          <!-- Diya 1 -->
+          <svg class="diya" viewBox="0 0 140 110"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-hidden="true">
+
+            <ellipse cx="70" cy="94" rx="51" ry="9"
+                     fill="#ffb23f" opacity=".18"/>
+
+            <path class="diya-flame"
+                  d="M70 7 C76 21 89 31 85 47
+                     C82 58 76 63 70 64
+                     C61 62 54 54 56 43
+                     C58 29 68 21 70 7Z"
+                  fill="#ffb83f"/>
+
+            <path d="M70 29 C77 42 76 52 70 57
+                     C64 53 64 43 70 29Z"
+                  fill="#fff3bd" opacity=".92"/>
+
+            <path d="M68 61 L72 61 L73 72 L67 72Z"
+                  fill="#ffd17a"/>
+
+            <path d="M18 72 Q70 92 122 72
+                     Q114 98 70 102
+                     Q26 98 18 72Z"
+                  fill="#ba6335"
+                  stroke="#f4ba65"
+                  stroke-width="2"/>
+
+            <path d="M22 72 Q70 89 118 72"
+                  fill="none"
+                  stroke="#ffe0a0"
+                  stroke-width="4"
+                  stroke-linecap="round"/>
+
+            <path d="M37 87 Q70 97 103 87"
+                  fill="none"
+                  stroke="#e99b4a"
+                  stroke-width="2"
+                  opacity=".7"/>
+          </svg>
+
+          <!-- Diya 2 -->
+          <svg class="diya" viewBox="0 0 140 110"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-hidden="true">
+
+            <ellipse cx="70" cy="94" rx="51" ry="9"
+                     fill="#ffb23f" opacity=".18"/>
+
+            <path class="diya-flame"
+                  d="M70 7 C76 21 89 31 85 47
+                     C82 58 76 63 70 64
+                     C61 62 54 54 56 43
+                     C58 29 68 21 70 7Z"
+                  fill="#ffb83f"/>
+
+            <path d="M70 29 C77 42 76 52 70 57
+                     C64 53 64 43 70 29Z"
+                  fill="#fff3bd" opacity=".92"/>
+
+            <path d="M68 61 L72 61 L73 72 L67 72Z"
+                  fill="#ffd17a"/>
+
+            <path d="M18 72 Q70 92 122 72
+                     Q114 98 70 102
+                     Q26 98 18 72Z"
+                  fill="#ba6335"
+                  stroke="#f4ba65"
+                  stroke-width="2"/>
+
+            <path d="M22 72 Q70 89 118 72"
+                  fill="none"
+                  stroke="#ffe0a0"
+                  stroke-width="4"
+                  stroke-linecap="round"/>
+
+            <path d="M37 87 Q70 97 103 87"
+                  fill="none"
+                  stroke="#e99b4a"
+                  stroke-width="2"
+                  opacity=".7"/>
+          </svg>
+
+          <!-- Diya 3 -->
+          <svg class="diya" viewBox="0 0 140 110"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-hidden="true">
+
+            <ellipse cx="70" cy="94" rx="51" ry="9"
+                     fill="#ffb23f" opacity=".18"/>
+
+            <path class="diya-flame"
+                  d="M70 7 C76 21 89 31 85 47
+                     C82 58 76 63 70 64
+                     C61 62 54 54 56 43
+                     C58 29 68 21 70 7Z"
+                  fill="#ffb83f"/>
+
+            <path d="M70 29 C77 42 76 52 70 57
+                     C64 53 64 43 70 29Z"
+                  fill="#fff3bd" opacity=".92"/>
+
+            <path d="M68 61 L72 61 L73 72 L67 72Z"
+                  fill="#ffd17a"/>
+
+            <path d="M18 72 Q70 92 122 72
+                     Q114 98 70 102
+                     Q26 98 18 72Z"
+                  fill="#ba6335"
+                  stroke="#f4ba65"
+                  stroke-width="2"/>
+
+            <path d="M22 72 Q70 89 118 72"
+                  fill="none"
+                  stroke="#ffe0a0"
+                  stroke-width="4"
+                  stroke-linecap="round"/>
+
+            <path d="M37 87 Q70 97 103 87"
+                  fill="none"
+                  stroke="#e99b4a"
+                  stroke-width="2"
+                  opacity=".7"/>
+          </svg>
+
+        </div>
+
+        <p class="closing-message">
+          Let there be light, laughter and new beginnings. 🪔
+        </p>
+
+      </section>
+
+
+      <!-- All controls are available after the surprise. -->
+
+      <div class="celebration-controls">
+
+        <button
+          id="replayButton"
+          class="control-button replay-button"
+          type="button"
+        >
+          ↻ Replay Surprise
+        </button>
+
+        <button
+          id="soundButton"
+          class="control-button secondary-button"
+          type="button"
+          aria-pressed="false"
+        >
+          Sound: Off
+        </button>
+
+        <button
+          id="vibrationButton"
+          class="control-button secondary-button"
+          type="button"
+          aria-pressed="false"
+        >
+          Vibration: Off
+        </button>
+
+      </div>
+
+    </div>
+  </main>
+
+
+  <script>
+    "use strict";
+
+    /* =========================================
+       ELEMENT REFERENCES
+    ========================================= */
+
+    const processingScreen =
+      document.getElementById("processingScreen");
+
+    const processingMessage =
+      document.getElementById("processingMessage");
+
+    const celebrationScreen =
+      document.getElementById("celebrationScreen");
+
+    const replayButton =
+      document.getElementById("replayButton");
+
+    const soundButton =
+      document.getElementById("soundButton");
+
+    const vibrationButton =
+      document.getElementById("vibrationButton");
+
+    const canvas =
+      document.getElementById("fireworksCanvas");
+
+    const canvasContext =
+      canvas.getContext("2d");
+
+    const reducedMotion = window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+
+    /* =========================================
+       PROCESSING -> DIWALI REVEAL
+    ========================================= */
+
+    let verificationTimer = null;
+    let revealTimer = null;
+
+    function startExperience() {
+
+      // Clear any unfinished timers.
+      if (verificationTimer !== null) {
+        clearTimeout(verificationTimer);
+      }
+
+      if (revealTimer !== null) {
+        clearTimeout(revealTimer);
+      }
+
+      // Stop any previous celebration.
+      stopFireworks();
+      stopSound();
+
+      vibrationEnabled = false;
+
+      if ("vibrate" in navigator) {
+        try {
+          navigator.vibrate(0);
+        } catch (error) {
+          // Vibration is optional.
         }
       }
 
-      function playFestiveTone() {
-        if (!soundEnabled) return;
-        ensureAudio();
-        if (!audioContext) return;
+      updateVibrationButton();
 
-        const oscillator = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-        oscillator.type = 'triangle';
-        oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.18);
-        gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.065, audioContext.currentTime + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.35);
-        oscillator.connect(gain);
-        gain.connect(audioContext.destination);
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + 0.38);
+      // Show the initial screen and completely hide the reveal.
+      celebrationScreen.hidden = true;
+      processingScreen.hidden = false;
+
+      processingMessage.textContent =
+        "Please wait while we process your request.";
+
+      document.title = "Processing";
+
+      // Change the supporting message after a short pause.
+      verificationTimer = setTimeout(function () {
+
+        processingMessage.textContent =
+          "Verifying details...";
+
+      }, 1350);
+
+      // Replace the entire processing screen after 3 seconds.
+      revealTimer = setTimeout(function () {
+
+        showCelebration();
+
+      }, 3000);
+    }
+
+
+    function showCelebration() {
+
+      processingScreen.hidden = true;
+      celebrationScreen.hidden = false;
+
+      document.title = "Happy Diwali!";
+
+      startFireworks();
+
+      // Put keyboard focus on the new screen.
+      try {
+        celebrationScreen.focus({ preventScroll: true });
+      } catch (error) {
+        // Focus support varies between browsers.
+      }
+    }
+
+
+    /* =========================================
+       FIREWORKS AND FLOATING PARTICLES
+    ========================================= */
+
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+    let pixelRatio = 1;
+
+    let animationFrame = null;
+    let fireworkParticles = [];
+    let backgroundSparkles = [];
+
+    let lastBurstTime = 0;
+    let burstCount = 0;
+
+    function resizeCanvas() {
+
+      pixelRatio = Math.min(
+        window.devicePixelRatio || 1,
+        1.7
+      );
+
+      canvasWidth = window.innerWidth;
+      canvasHeight = window.innerHeight;
+
+      canvas.width = Math.round(canvasWidth * pixelRatio);
+      canvas.height = Math.round(canvasHeight * pixelRatio);
+
+      canvasContext.setTransform(
+        pixelRatio,
+        0,
+        0,
+        pixelRatio,
+        0,
+        0
+      );
+
+      const sparkleCount = reducedMotion ? 18 : 42;
+
+      backgroundSparkles = [];
+
+      for (let i = 0; i < sparkleCount; i++) {
+
+        backgroundSparkles.push({
+          x: Math.random() * canvasWidth,
+          y: Math.random() * canvasHeight,
+          radius: 0.5 + Math.random() * 1.25,
+          phase: Math.random() * Math.PI * 2
+        });
+
+      }
+    }
+
+
+    function createFireworkBurst() {
+
+      const centerX =
+        canvasWidth * (0.15 + Math.random() * 0.70);
+
+      const centerY =
+        canvasHeight * (0.12 + Math.random() * 0.42);
+
+      const particleCount = reducedMotion ? 20 : 48;
+
+      const baseHue = 34 + Math.random() * 22;
+
+      for (let i = 0; i < particleCount; i++) {
+
+        const angle =
+          (Math.PI * 2 * i / particleCount) +
+          (Math.random() * 0.12);
+
+        const speed = reducedMotion
+          ? 0.65 + Math.random() * 1.15
+          : 1.0 + Math.random() * 2.8;
+
+        fireworkParticles.push({
+
+          x: centerX,
+          y: centerY,
+
+          previousX: centerX,
+          previousY: centerY,
+
+          velocityX: Math.cos(angle) * speed,
+          velocityY: Math.sin(angle) * speed,
+
+          life: 42 + Math.random() * 38,
+          maximumLife: 80,
+
+          size: 1.0 + Math.random() * 1.8,
+
+          hue: baseHue + Math.random() * 14
+
+        });
+
       }
 
-      function vibrate() {
-        if (!vibrationEnabled || !navigator.vibrate) return;
-        navigator.vibrate([60, 70, 120]);
-      }
+      burstCount++;
 
-      function updateToggleLabel(button, enabled, labelOff, labelOn) {
-        button.setAttribute('aria-pressed', String(enabled));
-        button.textContent = enabled ? labelOn : labelOff;
-      }
+      // Gentle optional haptic feedback.
+      if (vibrationEnabled && burstCount % 3 === 0) {
 
-      function runPaymentFlow() {
-        loadingPanel.classList.add('visible');
-        surprisePanel.classList.remove('visible');
-        loadingText.textContent = 'Processing payment…';
-        payButton.disabled = true;
-        payButton.style.opacity = '0.7';
-
-        setTimeout(() => {
-          loadingText.textContent = 'Verifying details…';
-        }, reducedMotion ? 350 : 1200);
-
-        setTimeout(() => {
-          loadingPanel.classList.remove('visible');
-          surprisePanel.classList.add('visible');
-          playFestiveTone();
-          vibrate();
-          payButton.disabled = false;
-          payButton.style.opacity = '1';
-        }, reducedMotion ? 600 : 3000);
-      }
-
-      payButton.addEventListener('click', runPaymentFlow);
-      replayButton.addEventListener('click', runPaymentFlow);
-
-      soundToggle.addEventListener('click', () => {
-        soundEnabled = !soundEnabled;
-        if (soundEnabled) {
-          ensureAudio();
-          if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+        try {
+          navigator.vibrate(12);
+        } catch (error) {
+          // The celebration continues without vibration.
         }
-        updateToggleLabel(soundToggle, soundEnabled, '🔊 Sound: Off', '🔉 Sound: On');
-        if (soundEnabled) playFestiveTone();
-      });
 
-      vibrationToggle.addEventListener('click', () => {
-        vibrationEnabled = !vibrationEnabled;
-        updateToggleLabel(vibrationToggle, vibrationEnabled, '📳 Vibration: Off', '📳 Vibration: On');
-        if (vibrationEnabled) vibrate();
+      }
+    }
+
+
+    function drawFireworks(timestamp) {
+
+      if (celebrationScreen.hidden) {
+        return;
+      }
+
+      canvasContext.clearRect(
+        0,
+        0,
+        canvasWidth,
+        canvasHeight
+      );
+
+      canvasContext.save();
+
+      canvasContext.globalCompositeOperation = "lighter";
+
+      // Draw subtle floating golden background particles.
+      for (const sparkle of backgroundSparkles) {
+
+        const twinkle =
+          0.18 +
+          Math.abs(Math.sin(
+            timestamp * 0.0012 + sparkle.phase
+          )) * 0.48;
+
+        canvasContext.beginPath();
+
+        canvasContext.arc(
+          sparkle.x,
+          sparkle.y,
+          sparkle.radius,
+          0,
+          Math.PI * 2
+        );
+
+        canvasContext.fillStyle =
+          "rgba(255, 215, 145, " + twinkle + ")";
+
+        canvasContext.shadowBlur = 9;
+        canvasContext.shadowColor =
+          "rgba(255, 185, 87, 0.8)";
+
+        canvasContext.fill();
+      }
+
+      canvasContext.shadowBlur = 13;
+      canvasContext.lineCap = "round";
+
+      // Launch a new firework at intervals.
+      const burstInterval = reducedMotion ? 2300 : 1120;
+
+      if (
+        lastBurstTime === 0 ||
+        timestamp - lastBurstTime > burstInterval
+      ) {
+
+        createFireworkBurst();
+        lastBurstTime = timestamp;
+      }
+
+      // Animate individual firework particles.
+      for (
+        let i = fireworkParticles.length - 1;
+        i >= 0;
+        i--
+      ) {
+
+        const particle = fireworkParticles[i];
+
+        particle.previousX = particle.x;
+        particle.previousY = particle.y;
+
+        particle.x += particle.velocityX;
+        particle.y += particle.velocityY;
+
+        particle.velocityY += 0.018;
+        particle.velocityX *= 0.991;
+
+        particle.life--;
+
+        const opacity = Math.max(
+          0,
+          particle.life / particle.maximumLife
+        );
+
+        canvasContext.beginPath();
+
+        canvasContext.moveTo(
+          particle.previousX,
+          particle.previousY
+        );
+
+        canvasContext.lineTo(
+          particle.x,
+          particle.y
+        );
+
+        canvasContext.strokeStyle =
+          "hsla(" +
+          particle.hue +
+          ", 100%, 72%, " +
+          opacity +
+          ")";
+
+        canvasContext.lineWidth = particle.size;
+        canvasContext.stroke();
+
+        canvasContext.beginPath();
+
+        canvasContext.arc(
+          particle.x,
+          particle.y,
+          particle.size * 0.85,
+          0,
+          Math.PI * 2
+        );
+
+        canvasContext.fillStyle =
+          "hsla(" +
+          particle.hue +
+          ", 100%, 82%, " +
+          opacity +
+          ")";
+
+        canvasContext.fill();
+
+        if (particle.life <= 0) {
+          fireworkParticles.splice(i, 1);
+        }
+      }
+
+      canvasContext.restore();
+
+      animationFrame =
+        requestAnimationFrame(drawFireworks);
+    }
+
+
+    function startFireworks() {
+
+      stopFireworks();
+
+      resizeCanvas();
+
+      fireworkParticles = [];
+      lastBurstTime = 0;
+      burstCount = 0;
+
+      animationFrame =
+        requestAnimationFrame(drawFireworks);
+    }
+
+
+    function stopFireworks() {
+
+      if (animationFrame !== null) {
+
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+
+      }
+
+      fireworkParticles = [];
+
+      if (canvasContext) {
+
+        canvasContext.clearRect(
+          0,
+          0,
+          canvasWidth,
+          canvasHeight
+        );
+      }
+    }
+
+
+    window.addEventListener("resize", function () {
+
+      if (!celebrationScreen.hidden) {
+        resizeCanvas();
+      }
+
+    });
+
+
+    /* =========================================
+       OPTIONAL ORIGINAL FESTIVE CHIME SOUND
+       Sound starts only after the visitor taps
+       the sound button.
+    ========================================= */
+
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
+
+    let audioContext = null;
+    let soundEnabled = false;
+    let soundTimer = null;
+
+    function updateSoundButton() {
+
+      soundButton.textContent = soundEnabled
+        ? "Sound: On"
+        : "Sound: Off";
+
+      soundButton.setAttribute(
+        "aria-pressed",
+        String(soundEnabled)
+      );
+    }
+
+
+    function playChime(frequency, startTime, duration) {
+
+      if (!audioContext || !soundEnabled) {
+        return;
+      }
+
+      const oscillator =
+        audioContext.createOscillator();
+
+      const volume =
+        audioContext.createGain();
+
+      oscillator.type = "sine";
+
+      oscillator.frequency.setValueAtTime(
+        frequency,
+        startTime
+      );
+
+      volume.gain.setValueAtTime(
+        0.0001,
+        startTime
+      );
+
+      volume.gain.exponentialRampToValueAtTime(
+        0.026,
+        startTime + 0.035
+      );
+
+      volume.gain.exponentialRampToValueAtTime(
+        0.0001,
+        startTime + duration
+      );
+
+      oscillator.connect(volume);
+      volume.connect(audioContext.destination);
+
+      oscillator.start(startTime);
+      oscillator.stop(startTime + duration + 0.02);
+    }
+
+
+    function playMelodyPhrase() {
+
+      if (!audioContext || !soundEnabled) {
+        return;
+      }
+
+      // An original, gentle pentatonic chime melody.
+      const notes = [
+        523.25,
+        659.25,
+        783.99,
+        880.00,
+        783.99,
+        659.25,
+        587.33,
+        523.25
+      ];
+
+      const startTime = audioContext.currentTime + 0.04;
+
+      notes.forEach(function (frequency, index) {
+
+        const noteTime = startTime + index * 0.34;
+
+        playChime(
+          frequency,
+          noteTime,
+          0.42
+        );
+
+        // A subtle lower harmony on selected notes.
+        if (index === 0 || index === 3 || index === 6) {
+
+          playChime(
+            frequency / 2,
+            noteTime + 0.04,
+            0.48
+          );
+        }
+
       });
-    </script>
-  </body>
+    }
+
+
+    async function toggleSound() {
+
+      if (!AudioContextClass) {
+        soundButton.textContent = "Sound unavailable";
+        soundButton.disabled = true;
+        return;
+      }
+
+      if (soundEnabled) {
+
+        stopSound();
+        return;
+      }
+
+      try {
+
+        if (!audioContext) {
+          audioContext = new AudioContextClass();
+        }
+
+        // Resume only after the visitor's tap.
+        await audioContext.resume();
+
+        soundEnabled = true;
+
+        updateSoundButton();
+
+        playMelodyPhrase();
+
+        soundTimer = setInterval(
+          playMelodyPhrase,
+          3900
+        );
+
+      } catch (error) {
+
+        soundEnabled = false;
+
+        soundButton.textContent = "Sound unavailable";
+        soundButton.disabled = true;
+
+      }
+    }
+
+
+    function stopSound() {
+
+      soundEnabled = false;
+
+      if (soundTimer !== null) {
+
+        clearInterval(soundTimer);
+        soundTimer = null;
+
+      }
+
+      if (
+        audioContext &&
+        audioContext.state === "running"
+      ) {
+
+        audioContext.suspend().catch(function () {
+          // Audio is optional.
+        });
+      }
+
+      updateSoundButton();
+    }
+
+
+    soundButton.addEventListener(
+      "click",
+      toggleSound
+    );
+
+
+    /* =========================================
+       OPTIONAL MOBILE VIBRATION
+    ========================================= */
+
+    let vibrationEnabled = false;
+
+    const vibrationSupported =
+      typeof navigator.vibrate === "function";
+
+
+    function updateVibrationButton() {
+
+      if (!vibrationSupported) {
+
+        vibrationButton.textContent =
+          "Vibration unavailable";
+
+        vibrationButton.disabled = true;
+
+        vibrationButton.setAttribute(
+          "aria-pressed",
+          "false"
+        );
+
+        return;
+      }
+
+      vibrationButton.disabled = false;
+
+      vibrationButton.textContent =
+        vibrationEnabled
+          ? "Vibration: On"
+          : "Vibration: Off";
+
+      vibrationButton.setAttribute(
+        "aria-pressed",
+        String(vibrationEnabled)
+      );
+    }
+
+
+    function toggleVibration() {
+
+      if (!vibrationSupported) {
+        return;
+      }
+
+      vibrationEnabled = !vibrationEnabled;
+
+      try {
+
+        if (vibrationEnabled) {
+
+          // A short confirmation pulse.
+          navigator.vibrate([45, 35, 70]);
+
+        } else {
+
+          navigator.vibrate(0);
+
+        }
+
+      } catch (error) {
+        vibrationEnabled = false;
+      }
+
+      updateVibrationButton();
+    }
+
+
+    vibrationButton.addEventListener(
+      "click",
+      toggleVibration
+    );
+
+
+    /* =========================================
+       REPLAY THE COMPLETE EXPERIENCE
+    ========================================= */
+
+    replayButton.addEventListener(
+      "click",
+      startExperience
+    );
+
+
+    /* =========================================
+       INITIALISE
+    ========================================= */
+
+    updateSoundButton();
+    updateVibrationButton();
+
+    // The sequence starts automatically when the page opens.
+    startExperience();
+
+  </script>
+
+</body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
